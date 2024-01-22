@@ -1,37 +1,54 @@
 import { useState } from "react";
 
-export default function Form() {
-  const [name, setName] = useState({ firstName: "", lastName: "" });
+const initialItems = [
+  { title: "pretzels", id: 0 },
+  { title: "crispy seaweed", id: 1 },
+  { title: "granola bar", id: 2 },
+];
 
-  function handleFirstNameChange(e) {
-    setName({
-      ...name,
-      firstName: e.target.value,
-    });
-  }
+export default function Menu() {
+  const [items, setItems] = useState(initialItems);
+  const [selectedId, setSelectedId] = useState(0);
+  const selectedItem = items.find(item => item.id === selectedId);
 
-  function handleLastNameChange(e) {
-    setName({
-      ...name,
-      lastName: e.target.value,
-    });
+  function handleItemChange(id, e) {
+    setItems(
+      items.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            title: e.target.value,
+          };
+        } else {
+          return item;
+        }
+      })
+    );
   }
 
   return (
     <>
-      <h2>Let’s check you in</h2>
-      <label>
-        First name:{" "}
-        <input value={name.firstName} onChange={handleFirstNameChange} />
-      </label>
-      <label>
-        Last name:{" "}
-        <input value={name.lastName} onChange={handleLastNameChange} />
-      </label>
-      <p>
-        Your ticket will be issued to:{" "}
-        <b>{`${name.firstName} ${name.lastName}`}</b>
-      </p>
+      <h2>Whats your travel snack?</h2>
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>
+            <input
+              value={item.title}
+              onChange={(e) => {
+                handleItemChange(item.id, e);
+              }}
+            />{" "}
+            <button
+              onClick={() => {
+                setSelectedId(item.id);
+              }}
+            >
+              Choose
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p>You picked {selectedItem.title}.</p>
     </>
   );
 }
